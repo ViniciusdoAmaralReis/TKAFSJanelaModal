@@ -4,11 +4,11 @@ interface
 
 uses
   System.Classes, System.UITypes,
-  FMX.Controls, FMX.Graphics, FMX.Layouts, FMX.Objects, FMX.StdCtrls, FMX.Types,
+  FMX.Controls, FMX.Graphics, FMX.Objects, FMX.StdCtrls, FMX.Types,
   UntKAFSBotao;
 
 type
-  TKAFSJanelaModal = class(TLayout)
+  TKAFSJanelaModal = class(TRectangle)
     RecCorpo: TRectangle;
     LabTitulo: TLabel;
     BtnVoltar: TKAFSBotao;
@@ -16,7 +16,8 @@ type
     BtnConfirmar: TKAFSBotao;
 
     constructor Create(AOwner: TComponent); override;
-    procedure KAFSTelaModalConfig(const _cortema1, _cortema2: TAlphaColor; _titulo: String; _botaoconfirmar: String);
+    procedure KAFSJanelaModalConfig(const _cortema1, _cortema2: TAlphaColor; _titulo: String; _botaoconfirmar: String);
+    destructor Destroy; override;
   end;
 
 implementation
@@ -28,7 +29,8 @@ begin
   if AOwner is TControl then
     Parent := TControl(AOwner);
 
-  Align := TAlignLayout.Client;
+  Align := TAlignLayout.Contents;
+  Fill.Color := $64000000;
   Visible := False;
 
   RecCorpo := TRectangle.Create(Self);
@@ -56,7 +58,7 @@ begin
   begin
     Align := TAlignLayout.MostTop;
     Font.Family := 'Roboto';
-    Font.Size := 48;
+    Font.Size := 36;
     Font.Style := [TFontStyle.fsBold];
     Height := 70;
     Parent := RecCorpo;
@@ -89,7 +91,7 @@ begin
   end;
 end;
 
-procedure TKAFSJanelaModal.KAFSTelaModalConfig(const _cortema1, _cortema2: TAlphaColor; _titulo: String; _botaoconfirmar: String);
+procedure TKAFSJanelaModal.KAFSJanelaModalConfig(const _cortema1, _cortema2: TAlphaColor; _titulo: String; _botaoconfirmar: String);
 begin
   TThread.Synchronize(nil, procedure
   begin
@@ -126,6 +128,12 @@ begin
         LabDescricao.Text := _botaoconfirmar;
     end;
   end);
+end;
+
+destructor TKAFSJanelaModal.Destroy;
+begin
+
+  inherited;
 end;
 
 end.
