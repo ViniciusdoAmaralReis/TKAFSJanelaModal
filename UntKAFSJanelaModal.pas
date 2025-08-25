@@ -3,7 +3,7 @@
 interface
 
 uses
-  System.Classes, System.UITypes,
+  System.Classes, System.SysUtils, System.UITypes,
   FMX.Controls, FMX.Graphics, FMX.Objects, FMX.StdCtrls, FMX.Types,
   UntKAFSBotao;
 
@@ -12,11 +12,12 @@ type
     RecCorpo: TRectangle;
     LabTitulo: TLabel;
     BtnVoltar: TKAFSBotao;
+    LabIcone: TLabel;
     LinTitulo: TLine;
     BtnConfirmar: TKAFSBotao;
 
     constructor Create(AOwner: TComponent); override;
-    procedure KAFSJanelaModalConfig(const _cortema1, _cortema2: TAlphaColor; _titulo: String; _botaoconfirmar: String);
+    procedure KAFSJanelaModalConfig(const _cortema1, _cortema2: TAlphaColor; _titulo, _icone: String; _botaoconfirmar: String);
     destructor Destroy; override;
   end;
 
@@ -74,6 +75,19 @@ begin
     Width := Height;
   end;
 
+  LabIcone := TLabel.Create(Self);
+  with LabIcone do
+  begin
+    Align := TAlignLayout.MostRight;
+    Font.Family := 'Segoe UI Emoji';
+    Font.Size := 36;
+    Font.Style := [TFontStyle.fsBold];
+    Parent := LabTitulo;
+    StyledSettings := [];
+    TextSettings.HorzAlign := TTextAlign.Center;
+    Width := LabTitulo.Height;
+  end;
+
   LinTitulo := TLine.Create(Self);
   with LinTitulo do
   begin
@@ -91,7 +105,7 @@ begin
   end;
 end;
 
-procedure TKAFSJanelaModal.KAFSJanelaModalConfig(const _cortema1, _cortema2: TAlphaColor; _titulo: String; _botaoconfirmar: String);
+procedure TKAFSJanelaModal.KAFSJanelaModalConfig(const _cortema1, _cortema2: TAlphaColor; _titulo, _icone: String; _botaoconfirmar: String);
 begin
   TThread.Synchronize(nil, procedure
   begin
@@ -108,8 +122,15 @@ begin
     // Cor do texto do botão
     with BtnVoltar do
     begin
-      Fill.Color := _cortema1;
-      LabDescricao.FontColor := _cortema2;
+      Fill.Color := _cortema2;
+      LabDescricao.FontColor := _cortema1;
+    end;
+
+    // Texto e cor da fonte
+    with LabIcone do
+    begin
+      Text := _icone;
+      TextSettings.FontColor := _cortema1;
     end;
 
     // Cor da linha
@@ -132,8 +153,25 @@ end;
 
 destructor TKAFSJanelaModal.Destroy;
 begin
+  if Assigned(BtnConfirmar) then
+    FreeAndNil(BtnConfirmar);
 
-  inherited;
+  if Assigned(LinTitulo) then
+    FreeAndNil(LinTitulo);
+
+  if Assigned(LabIcone) then
+    FreeAndNil(LabIcone);
+
+  if Assigned(BtnVoltar) then
+   FreeAndNil(BtnVoltar);
+
+  if Assigned(LabTitulo) then
+    FreeAndNil(LabTitulo);
+
+  if Assigned(RecCorpo) then
+    FreeAndNil(RecCorpo);
+
+  inherited Destroy;
 end;
 
 end.
