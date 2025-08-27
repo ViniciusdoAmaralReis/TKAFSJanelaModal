@@ -9,12 +9,12 @@ uses
 
 type
   TKAFSJanelaModal = class(TRectangle)
-    RecCorpo: TRectangle;
-    LabTitulo: TLabel;
-    BtnVoltar: TKAFSBotao;
-    LabIcone: TLabel;
-    LinTitulo: TLine;
-    BtnConfirmar: TKAFSBotao;
+    rectCorpo: TRectangle;
+    labTitulo: TLabel;
+    btnVoltar: TKAFSBotao;
+    labIcone: TLabel;
+    linTitulo: TLine;
+    btnConfirmar: TKAFSBotao;
 
     constructor Create(AOwner: TComponent); override;
     procedure KAFSJanelaModalConfig(const _cortema1, _cortema2: TAlphaColor; _titulo, _icone: String; _botaoconfirmar: String);
@@ -34,12 +34,11 @@ begin
   Fill.Color := $64000000;
   Visible := False;
 
-  RecCorpo := TRectangle.Create(Self);
-  with RecCorpo do
+  rectCorpo := TRectangle.Create(Self);
+  with rectCorpo do
   begin
     Parent := Self;
     Stroke.Kind := TBrushKind.None;
-
     {$IFDEF MSWINDOWS}
     // No Windows a tela ocupa o centro
     Align := TAlignLayout.HorzCenter;
@@ -54,29 +53,29 @@ begin
     {$ENDIF}
   end;
 
-  LabTitulo := TLabel.Create(Self);
-  with LabTitulo do
+  labTitulo := TLabel.Create(Self);
+  with labTitulo do
   begin
     Align := TAlignLayout.MostTop;
     Font.Family := 'Roboto';
     Font.Size := 36;
     Font.Style := [TFontStyle.fsBold];
     Height := 70;
-    Parent := RecCorpo;
+    Parent := rectCorpo;
     StyledSettings := [];
     TextSettings.HorzAlign := TTextAlign.Center;
   end;
 
-  BtnVoltar := TKAFSBotao.Create(LabTitulo);
-  with BtnVoltar do
+  btnVoltar := TKAFSBotao.Create(LabTitulo);
+  with btnVoltar do
   begin
     Align := TAlignLayout.MostLeft;
     LabDescricao.Text := '❮';
     Width := Height;
   end;
 
-  LabIcone := TLabel.Create(Self);
-  with LabIcone do
+  labIcone := TLabel.Create(Self);
+  with labIcone do
   begin
     Align := TAlignLayout.MostRight;
     Font.Family := 'Segoe UI Emoji';
@@ -88,20 +87,20 @@ begin
     Width := LabTitulo.Height;
   end;
 
-  LinTitulo := TLine.Create(Self);
-  with LinTitulo do
+  linTitulo := TLine.Create(Self);
+  with linTitulo do
   begin
     Align := TAlignLayout.Top;
     Height := 1;
     LineType := TLineType.Bottom;
-    Parent := RecCorpo;
+    Parent := rectCorpo;
   end;
 
-  BtnConfirmar := TKAFSBotao.Create(RecCorpo);
-  with BtnConfirmar do
+  btnConfirmar := TKAFSBotao.Create(rectCorpo);
+  with btnConfirmar do
   begin
     Align := TAlignLayout.MostBottom;
-    Parent := RecCorpo;
+    Parent := rectCorpo;
   end;
 end;
 
@@ -110,66 +109,66 @@ begin
   TThread.Synchronize(nil, procedure
   begin
     // Cor do fundo
-    RecCorpo.Fill.Color := _cortema2;
+    rectCorpo.Fill.Color := _cortema2;
 
     // Texto e cor da fonte
-    with LabTitulo do
+    with labTitulo do
     begin
       Text := _titulo;
       TextSettings.FontColor := _cortema1;
     end;
 
     // Cor do texto do botão
-    with BtnVoltar do
+    with btnVoltar do
     begin
       Fill.Color := _cortema2;
       LabDescricao.FontColor := _cortema1;
     end;
 
     // Texto e cor da fonte
-    with LabIcone do
+    with labIcone do
     begin
       Text := _icone;
       TextSettings.FontColor := _cortema1;
     end;
 
     // Cor da linha
-    LinTitulo.Stroke.Color := _cortema1;
+    linTitulo.Stroke.Color := _cortema1;
 
     // Cor dos botões de ação e texto
-    with BtnConfirmar do
+    with btnConfirmar do
     begin
       Fill.Color := _cortema1;
-      LabDescricao.FontColor := _cortema2;
+      labDescricao.FontColor := _cortema2;
 
       // Se a string estiver vazia, indica que o botão não será usado
       if _botaoconfirmar = '' then
         Visible := False
       else
-        LabDescricao.Text := _botaoconfirmar;
+        labDescricao.Text := _botaoconfirmar;
     end;
   end);
 end;
 
 destructor TKAFSJanelaModal.Destroy;
 begin
-  if Assigned(BtnConfirmar) then
-    FreeAndNil(BtnConfirmar);
+  if Assigned(btnConfirmar) then
+    FreeAndNil(btnConfirmar);
 
-  if Assigned(LinTitulo) then
-    FreeAndNil(LinTitulo);
+  if Assigned(linTitulo) then
+    FreeAndNil(linTitulo);
 
-  if Assigned(LabIcone) then
-    FreeAndNil(LabIcone);
+  if Assigned(labIcone) then
+    FreeAndNil(labIcone);
 
-  if Assigned(BtnVoltar) then
-   FreeAndNil(BtnVoltar);
+  if Assigned(btnVoltar) then
+   FreeAndNil(btnVoltar);
 
-  if Assigned(LabTitulo) then
-    FreeAndNil(LabTitulo);
+  if Assigned(labTitulo) then
+    FreeAndNil(labTitulo);
 
-  if Assigned(RecCorpo) then
-    FreeAndNil(RecCorpo);
+  if Assigned(rectCorpo) then
+    FreeAndNil(rectCorpo);
 
   inherited Destroy;
 end;
