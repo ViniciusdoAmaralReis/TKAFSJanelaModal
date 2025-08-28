@@ -16,7 +16,7 @@ type
     linTitulo: TLine;
     btnConfirmar: TKAFSBotao;
 
-    constructor Create(AOwner: TComponent); override;
+    constructor Create(AOwner: TComponent); reintroduce;
     procedure KAFSJanelaModalConfig(const _cortema1, _cortema2: TAlphaColor; _titulo, _icone: String; _botaoconfirmar: String);
     destructor Destroy; override;
   end;
@@ -152,23 +152,6 @@ end;
 
 destructor TKAFSJanelaModal.Destroy;
 begin
-  if Assigned(btnConfirmar) then
-    FreeAndNil(btnConfirmar);
-
-  if Assigned(linTitulo) then
-    FreeAndNil(linTitulo);
-
-  if Assigned(labIcone) then
-    FreeAndNil(labIcone);
-
-  if Assigned(btnVoltar) then
-   FreeAndNil(btnVoltar);
-
-  if Assigned(labTitulo) then
-    FreeAndNil(labTitulo);
-
-  if Assigned(rectCorpo) then
-    FreeAndNil(rectCorpo);
 
   inherited Destroy;
 end;
