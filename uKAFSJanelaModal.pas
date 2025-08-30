@@ -58,7 +58,7 @@ begin
   begin
     Align := TAlignLayout.MostTop;
     Font.Family := 'Roboto';
-    Font.Size := 36;
+    Font.Size := 28;
     Font.Style := [TFontStyle.fsBold];
     Height := 70;
     Parent := rectCorpo;
@@ -79,7 +79,7 @@ begin
   begin
     Align := TAlignLayout.MostRight;
     Font.Family := 'Segoe UI Emoji';
-    Font.Size := 36;
+    Font.Size := 28;
     Font.Style := [TFontStyle.fsBold];
     Parent := LabTitulo;
     StyledSettings := [];
