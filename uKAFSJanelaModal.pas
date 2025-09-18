@@ -3,21 +3,22 @@
 interface
 
 uses
-  System.Classes, System.SysUtils, System.UITypes,
+  System.Classes, System.UITypes,
   FMX.Controls, FMX.Graphics, FMX.Objects, FMX.StdCtrls, FMX.Types,
   uKAFSBotao;
 
 type
   TKAFSJanelaModal = class(TRectangle)
-    rectCorpo: TRectangle;
-    labTitulo: TLabel;
+    recCorpo: TRectangle;
+    recTitulo: TRectangle;
     btnVoltar: TKAFSBotao;
-    labIcone: TLabel;
-    linTitulo: TLine;
+    labTitulo: TLabel;
+    recImagem: TRectangle;
+    imgImagem: TImage;
     btnConfirmar: TKAFSBotao;
 
     constructor Create(AOwner: TComponent); reintroduce;
-    procedure KAFSJanelaModalConfig(const _cortema1, _cortema2: TAlphaColor; _titulo, _icone: String; _botaoconfirmar: String);
+    procedure KAFSJanelaModalConfig(const _cortema1, _cortema2: TAlphaColor; const _imgLogo: TBitmap; const _titulo, _txtbotao: String);
     destructor Destroy; override;
   end;
 
@@ -25,128 +26,110 @@ implementation
 
 constructor TKAFSJanelaModal.Create(AOwner: TComponent);
 begin
-  inherited Create(AOwner);
-
-  if AOwner is TControl then
-    Parent := TControl(AOwner);
-
-  Align := TAlignLayout.Contents;
-  Fill.Color := $64000000;
-  Visible := False;
-
-  rectCorpo := TRectangle.Create(Self);
-  with rectCorpo do
+  TThread.Synchronize(nil, procedure
   begin
-    Parent := Self;
-    Stroke.Kind := TBrushKind.None;
-    {$IFDEF MSWINDOWS}
+    inherited Create(AOwner);
+
+    if AOwner is TControl then
+      Self.Parent := TControl(AOwner);
+
+    Self.Align := TAlignLayout.Contents;
+    Self.Fill.Color := $FF323232;
+    Self.Visible := False;
+
+    recCorpo := TRectangle.Create(Self);
+    recCorpo.Parent := Self;
+    recCorpo.Stroke.Kind := TBrushKind.None;
     // No Windows a tela ocupa o centro
-    Align := TAlignLayout.HorzCenter;
-    Height := TControl(AOwner).Height;
-    Margins.Bottom := Height / 10;
-    Margins.Top := Height / 10;
-    Width := (Height / 16) * 9;
+    {$IFDEF MSWINDOWS}
+    recCorpo.Align := TAlignLayout.HorzCenter;
+    recCorpo.Height := TControl(AOwner).Height;
+    recCorpo.Margins.Bottom := recCorpo.Height / 10;
+    recCorpo.Margins.Top := recCorpo.Height / 10;
+    recCorpo.Width := (recCorpo.Height / 16) * 9;
     {$ENDIF}
-    {$IFDEF ANDROID}
     // No Android a tela ocupa todo o espaço
-    Align := TAlignLayout.Client;
+    {$IFDEF ANDROID}
+    rectCorpo.Align := TAlignLayout.Client;
     {$ENDIF}
-  end;
 
-  labTitulo := TLabel.Create(Self);
-  with labTitulo do
-  begin
-    Align := TAlignLayout.MostTop;
-    Font.Family := 'Roboto';
-    Font.Size := 28;
-    Font.Style := [TFontStyle.fsBold];
-    Height := 70;
-    Parent := rectCorpo;
-    StyledSettings := [];
-    TextSettings.HorzAlign := TTextAlign.Center;
-  end;
+    recTitulo := TRectangle.Create(Self);
+    recTitulo.Align := TAlignLayout.MostTop;
+    recTitulo.Corners := [TCorner.BottomLeft, TCorner.BottomRight];
+    recTitulo.Height := 70;
+    recTitulo.Parent := recCorpo;
+    recTitulo.Stroke.Kind := TBrushKind.None;
+    recTitulo.XRadius := 25;
+    recTitulo.YRadius := 25;
 
-  btnVoltar := TKAFSBotao.Create(LabTitulo);
-  with btnVoltar do
-  begin
-    Align := TAlignLayout.MostLeft;
-    LabDescricao.Text := '❮';
-    Width := Height;
-  end;
+    btnVoltar := TKAFSBotao.Create(recTitulo);
+    btnVoltar.Align := TAlignLayout.MostLeft;
+    btnVoltar.LabDescricao.Text := '❮';
+    btnVoltar.Width := 50;
 
-  labIcone := TLabel.Create(Self);
-  with labIcone do
-  begin
-    Align := TAlignLayout.MostRight;
-    Font.Family := 'Segoe UI Emoji';
-    Font.Size := 28;
-    Font.Style := [TFontStyle.fsBold];
-    Parent := LabTitulo;
-    StyledSettings := [];
-    TextSettings.HorzAlign := TTextAlign.Center;
-    Width := LabTitulo.Height;
-  end;
+    labTitulo := TLabel.Create(Self);
+    labTitulo.Align := TAlignLayout.Contents;
+    labTitulo.Font.Family := 'Roboto';
+    labTitulo.Font.Size := 26;
+    labTitulo.Font.Style := [TFontStyle.fsBold];
+    labTitulo.Margins.Left := btnVoltar.Width;
+    labTitulo.Parent := recTitulo;
+    labTitulo.StyledSettings := [];
+    labTitulo.TextSettings.HorzAlign := TTextAlign.Leading;
 
-  linTitulo := TLine.Create(Self);
-  with linTitulo do
-  begin
-    Align := TAlignLayout.Top;
-    Height := 1;
-    LineType := TLineType.Bottom;
-    Parent := rectCorpo;
-  end;
+    recImagem := TRectangle.Create(Self);
+    recImagem.Align := TAlignLayout.MostRight;
+    recImagem.Fill.Color := TAlphaColors.White;
+    recImagem.Height := 100;
+    recImagem.Margins.Bottom := -30;
+    recImagem.Parent := recTitulo;
+    recImagem.Stroke.Thickness := 10;
+    recImagem.Width := 100;
+    recImagem.XRadius := 25;
+    recImagem.YRadius := 25;
 
-  btnConfirmar := TKAFSBotao.Create(rectCorpo);
-  with btnConfirmar do
-  begin
-    Align := TAlignLayout.MostBottom;
-    Parent := rectCorpo;
-  end;
+    imgImagem := TImage.Create(Self);
+    imgImagem.Align := TAlignLayout.Client;
+    imgImagem.Margins.Bottom := 20;
+    imgImagem.Margins.Left := 20;
+    imgImagem.Margins.Right := 20;
+    imgImagem.Margins.Top := 20;
+    imgImagem.Parent := recImagem;
+    imgImagem.WrapMode := TImageWrapMode.Fit;
+
+    btnConfirmar := TKAFSBotao.Create(recCorpo);
+    btnConfirmar.Align := TAlignLayout.MostBottom;
+    btnConfirmar.Margins.Bottom := 20;
+    btnConfirmar.Margins.Left := 20;
+    btnConfirmar.Margins.Right := 20;
+    btnConfirmar.Margins.Top := 20;
+    btnConfirmar.Parent := recCorpo;
+    btnConfirmar.XRadius := 25;
+    btnConfirmar.YRadius := 25;
+  end);
 end;
 
-procedure TKAFSJanelaModal.KAFSJanelaModalConfig(const _cortema1, _cortema2: TAlphaColor; _titulo, _icone: String; _botaoconfirmar: String);
+procedure TKAFSJanelaModal.KAFSJanelaModalConfig(const _cortema1, _cortema2: TAlphaColor; const _imgLogo: TBitmap; const _titulo, _txtbotao: String);
 begin
   TThread.Synchronize(nil, procedure
   begin
-    // Cor do fundo
-    rectCorpo.Fill.Color := _cortema2;
+    // Configura componentes
+    recCorpo.Fill.Color := _cortema2;
+    recTitulo.Fill.Color := _cortema1;
+    btnVoltar.Fill.Color := TAlphaColors.Null;
+    btnVoltar.labDescricao.FontColor := _cortema2;
+    labTitulo.Text := _titulo;
+    labTitulo.TextSettings.FontColor := _cortema2;
+    recImagem.Stroke.Color := _cortema1;
+    imgImagem.Bitmap := _imgLogo;
+    btnConfirmar.Fill.Color := _cortema1;
+    btnConfirmar.labDescricao.FontColor := _cortema2;
 
-    // Texto e cor da fonte
-    with labTitulo do
-    begin
-      Text := _titulo;
-      TextSettings.FontColor := _cortema1;
-    end;
-
-    // Cor do texto do botão
-    with btnVoltar do
-    begin
-      Fill.Color := _cortema2;
-      LabDescricao.FontColor := _cortema1;
-    end;
-
-    // Texto e cor da fonte
-    with labIcone do
-    begin
-      Text := _icone;
-      TextSettings.FontColor := _cortema1;
-    end;
-
-    // Cor da linha
-    linTitulo.Stroke.Color := _cortema1;
-
-    // Cor dos botões de ação e texto
-    with btnConfirmar do
-    begin
-      Fill.Color := _cortema1;
-      labDescricao.FontColor := _cortema2;
-
-      // Se a string estiver vazia, indica que o botão não será usado
-      if _botaoconfirmar = '' then
-        Visible := False
-      else
-        labDescricao.Text := _botaoconfirmar;
-    end;
+    // Se a string estiver vazia, indica que o botão não será usado
+    if _txtbotao = '' then
+      btnConfirmar.Visible := False
+    else
+      btnConfirmar.labDescricao.Text := _txtbotao;
   end);
 end;
 
